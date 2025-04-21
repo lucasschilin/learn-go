@@ -1,9 +1,9 @@
 package main
 
 import (
-	"learn-go/meet"
+	mt "learn-go/meet"
 )
 
 func main() {
-	meet.SayHello()
+	mt.SayHello()
 }
