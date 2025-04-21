@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"learn-go/meet"
+)
 
 func main() {
-	fmt.Println("Hello, World!");
+	meet.SayHello()
 }
