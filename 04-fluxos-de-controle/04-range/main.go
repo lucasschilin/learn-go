@@ -26,7 +26,7 @@ func main() {
 		fmt.Println(strings.ToTitle(person_name), "está com", age, "anos.")
 	}
 
-	// posso pegar só akey ou só o val utilizando o "_"
+	// posso pegar só a key ou só o val utilizando o "_"
 	for _, val := range people { //key, _
 		fmt.Println(val)
 	}
