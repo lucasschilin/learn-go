@@ -1,0 +1,1 @@
+Link do curso: https://app.rocketseat.com.br/journey/go-curso-introdutorio
