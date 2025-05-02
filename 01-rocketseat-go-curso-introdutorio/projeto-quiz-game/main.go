@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type Player struct {
@@ -39,8 +40,6 @@ func (g *GameState) Init() {
 
 	g.Player = &player
 
-	g.ProcessCSV()
-
 	fmt.Printf("Vamos ao jogo, %s", player.Name)
 }
 
@@ -61,7 +60,14 @@ func (g *GameState) ProcessCSV() {
 	for index, row := range records {
 		if index != 0 {
 			fmt.Println(row)
-			// TODO: Create Question{} and add into GameState{}
+
+			question := Question{
+				Text:    row[0],
+				Options: row[1:5],
+				Answer:  toInt(row[5]),
+			}
+
+			g.Questions = append(g.Questions, question)
 		}
 	}
 }
@@ -77,7 +83,20 @@ func ReadInteraction() string {
 	return interaction
 }
 
+func toInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic("Erro ao converter valor de string para inteiro")
+	}
+
+	return i
+}
+
 func main() {
 	game := &GameState{}
+	go game.ProcessCSV()
 	game.Init()
+
+	fmt.Println(game.Questions)
+
 }
