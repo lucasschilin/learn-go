@@ -9,5 +9,5 @@ import (
 func main() {
 	dbConnection := config.SetupDB()
 
-	fmt.Println(dbConnection)
+	fmt.Println("\n", dbConnection)
 }
