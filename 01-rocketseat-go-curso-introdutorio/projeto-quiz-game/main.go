@@ -88,19 +88,22 @@ func (g *Game) Run() {
 			answer, err := toInt(interaction)
 			if err != nil || answer > len(question.Options) || answer < 1 {
 				fmt.Printf("A resposta deve ser um inteiro entre %d e %d", 1, len(question.Options))
-			} else {
-				playerAnswer = answer
-				break
+				continue
 			}
+
+			playerAnswer = answer
+			break
 		}
-		fmt.Printf("\n\n\n")
 
 		if playerAnswer == question.Answer {
 			g.Score += 10
+			fmt.Println("Você acertou!!")
+			continue
 		}
+		fmt.Println("Você errou :(")
 	}
 
-	fmt.Printf("Score = %f\n", g.Score/float32(len(g.Questions)))
+	fmt.Printf("Score = %.2f\n", g.Score/float32(len(g.Questions)))
 }
 
 func ReadInteraction() string {
@@ -127,5 +130,7 @@ func main() {
 	go game.ProcessCSV()
 	game.Init()
 	game.Run()
+
+	fmt.Println("FIM DE JOGO!")
 
 }
