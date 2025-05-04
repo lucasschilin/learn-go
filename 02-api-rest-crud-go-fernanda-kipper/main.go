@@ -1,13 +1,31 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
 
 	"github.com/lucasschilin/learn-go/apirest-crud-go/config"
+	"github.com/lucasschilin/learn-go/apirest-crud-go/handlers"
+	"github.com/lucasschilin/learn-go/apirest-crud-go/models"
 )
 
 func main() {
 	dbConnection := config.SetupDB()
+	defer dbConnection.Close()
 
-	fmt.Println("\n", dbConnection)
+	_, err := dbConnection.Query(models.CreateTableQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router := mux.NewRouter()
+
+	taskHandler := handlers.NewTaskHandler(dbConnection)
+
+	router.HandleFunc("/tasks", taskHandler.GetTasks).Methods("GET")
+
+	log.Fatal(http.ListenAndServe(":8080", router))
+
 }
