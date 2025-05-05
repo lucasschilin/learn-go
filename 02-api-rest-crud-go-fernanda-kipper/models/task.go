@@ -5,10 +5,10 @@ import (
 )
 
 type Task struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Status      bool   `json:"status"`
+	ID          int     `json:"id"`
+	Title       string  `json:"title"`
+	Description *string `json:"description"`
+	Status      bool    `json:"status"`
 }
 
 const TableName string = "tasks"
