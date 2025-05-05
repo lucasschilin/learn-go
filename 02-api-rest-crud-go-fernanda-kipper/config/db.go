@@ -20,7 +20,7 @@ func SetupDB() *sql.DB {
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USERNAME")
 	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
+	dbName := os.Getenv("DB_DATABASE")
 
 	connString := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
@@ -37,7 +37,10 @@ func SetupDB() *sql.DB {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Successfully conected to database")
+	fmt.Print(
+		"Successfully conected to database through the connection string below:\n",
+		connString,
+	)
 
 	return dbConnection
 
