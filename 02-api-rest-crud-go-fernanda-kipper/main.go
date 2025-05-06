@@ -27,7 +27,7 @@ func main() {
 	router.HandleFunc("/tasks", taskHandler.PostTask).Methods("POST")
 	router.HandleFunc("/tasks", taskHandler.GetTasks).Methods("GET")
 	// router.HandleFunc("/tasks/{id}", taskHandler.UpdateTask).Methods("UPDATE")
-	// router.HandleFunc("/tasks/{id}", taskHandler.DeleteTask).Methods("DELETE")
+	router.HandleFunc("/tasks/{id}", taskHandler.DeleteTask).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 

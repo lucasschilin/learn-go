@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/lucasschilin/learn-go/apirest-crud-go/models"
 )
 
@@ -68,4 +70,38 @@ func (th *TaskHandler) PostTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newTask)
+}
+
+func (th *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var taskID int
+
+	query := "SELECT id FROM tasks WHERE id = $1;"
+	err = th.DB.QueryRow(query, id).Scan(&taskID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Task not found.", http.StatusNotFound)
+			return
+		}
+
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	query = "DELETE FRom tasks WHERE id = $1;"
+	_, err = th.DB.Exec(query, taskID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Task deleted successfully."))
+
 }

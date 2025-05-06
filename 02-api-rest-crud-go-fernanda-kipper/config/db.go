@@ -39,7 +39,7 @@ func SetupDB() *sql.DB {
 
 	fmt.Print(
 		"Successfully conected to database through the connection string below:\n",
-		connString,
+		connString, "\n\n",
 	)
 
 	return dbConnection
