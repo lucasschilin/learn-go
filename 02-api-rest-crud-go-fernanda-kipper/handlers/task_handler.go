@@ -73,20 +73,22 @@ func (th *TaskHandler) PostTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
-	var task models.Task
-	json.NewDecoder(r.Body).Decode(&task)
-
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+	taskID, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	var taskID int
+	var task models.Task
+	err = json.NewDecoder(r.Body).Decode(&task)
+	if err != nil {
+		http.Error(w, "No body found.", http.StatusBadRequest)
+		return
+	}
 
 	query := "SELECT id FROM tasks WHERE id = $1;"
-	err = th.DB.QueryRow(query, id).Scan(&taskID)
+	err = th.DB.QueryRow(query, taskID).Scan(&taskID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "Task not found.", http.StatusNotFound)
