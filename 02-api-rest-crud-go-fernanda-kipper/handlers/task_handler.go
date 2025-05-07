@@ -72,6 +72,44 @@ func (th *TaskHandler) PostTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newTask)
 }
 
+func (th *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
+	var task models.Task
+	json.NewDecoder(r.Body).Decode(&task)
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var taskID int
+
+	query := "SELECT id FROM tasks WHERE id = $1;"
+	err = th.DB.QueryRow(query, id).Scan(&taskID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Task not found.", http.StatusNotFound)
+			return
+		}
+
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	query = "UPDATE tasks SET title = $1, description = $2, status = $3 WHERE id = $4 RETURNING *"
+	err = th.DB.QueryRow(query, task.Title, task.Description, task.Status, taskID).
+		Scan(&task.ID, &task.Title, &task.Description, &task.Status)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(task)
+}
+
 func (th *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
